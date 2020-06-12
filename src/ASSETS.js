@@ -1,0 +1,1 @@
+const ASSETS = {"atlases":["my-texture.json"],"images":["background.png","color_grid.jpg"],"sounds":["destroy_balls.mp3","land_ball.mp3","shoot.mp3","star_1.mp3","star_2.mp3","star_3.mp3"],"spines":["animation.json"]};export default ASSETS;
