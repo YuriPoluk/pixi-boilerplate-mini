@@ -46,6 +46,12 @@ function packSounds(done) {
             .pipe(dest('src/assets/sounds'));
 }
 
+function packFonts(done) {
+    return src(path.join('/src/assets_raw/fonts', '/**/*'))
+        .pipe(rename({dirname: ''}))
+        .pipe(dest('src/assets/fonts'));
+}
+
 function createAssetsList(done) {
     let contents = {};
     fs.readdirSync('./src/assets').forEach(function(dirName) {
@@ -61,11 +67,11 @@ function createAssetsList(done) {
             contents[dirName] = fs.readdirSync('./src/assets/' + dirName);
         }
     });
-    contents = 'const ASSETS = ' + JSON.stringify(contents) + ';' + 'export default ASSETS;';
-    return fs.writeFile('src/ASSETS.js', contents, done);
+    contents = 'export default ' + JSON.stringify(contents) + ';';
+    return fs.writeFile('src/ASSETS_CONFIG.js', contents, done);
 }
 
-exports.default = series(cleanAssetsFolder, parallel(packAtlases, packImages, packSounds, packSpines), createAssetsList)
+exports.default = series(cleanAssetsFolder, parallel(packAtlases, packImages, packSounds, packSpines, packFonts), createAssetsList)
 
 
 

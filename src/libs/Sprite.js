@@ -1,19 +1,20 @@
 class Sprite extends PIXI.Sprite {
     constructor(tex) {
-        var tmp = tex;
         if(tex && typeof tex == "string") {
             if(PIXI.Loader.shared.resources[tex]) {
                 tex = PIXI.Loader.shared.resources[tex].texture;
             }
             else {
                 try {
-                    tex = PIXI.Texture.fromFrame(tex)
+                    tex = PIXI.Texture.from(tex);
                 }
                 catch(err) {
-                    tex = undefined
+                    console.log('no texture with such name');
+                    tex = undefined;
                 }
             }
         }
+
         super(tex);
         this.anchor.set(0.5);
     }

@@ -16,6 +16,7 @@
   "author": "UrQo",
   "license": "ISC",
   "dependencies": {
+    "fontfaceobserver": "^2.1.0",
     "pixi.js": "^5.2.4"
   },
   "devDependencies": {
@@ -27,6 +28,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.0.1",
     "css-loader": "^3.5.3",
+    "file-loader": "^6.0.0",
     "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0",
     "gulp-cli": "^2.2.1",

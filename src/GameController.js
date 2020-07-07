@@ -1,6 +1,5 @@
 import MainGame from './MainGame.js'
 import AssetsPreloader from './libs/AssetsPreloader.js';
-import CONFIG from './Config.js';
 import LayoutManager from "./libs/LayoutManager";
 
 class GameController {
@@ -24,7 +23,7 @@ class GameController {
             view: container || document.body
         });
 
-        this.app.ticker.add(this.tick);
+        this.app.ticker.add(this.tick, this);
 
         this.initLayoutManager();
 
