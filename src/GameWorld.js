@@ -9,12 +9,15 @@ export default class GameWorld extends PIXI.Container {
         this.skyObjects = [];
         this.obstacles = [];
         this.allObjectsArrays = [this.floorTiles, this.skyObjects, this.obstacles];
+        this.objectsToSpawn = [];
         LayoutManager.fitLayout();
         this.WIDTH = LayoutManager.gameWidth;
         this.HEIGHT = LayoutManager.gameHeight;
-        this.FLOOR_TILE_WIDTH = 50;
-        this.FLOOR_TILES_QUANTITY = 1 + Math.ceil(this.WIDTH / this.FLOOR_TILE_WIDTH) + 1;
+        this.FLOOR_TILE_WIDTH = this.WIDTH / 7;
+        this.WORLD_SCALE = this.FLOOR_TILE_WIDTH / 200;
+        this.FLOOR_TILES_QUANTITY = 8;
         this.PLAYER_MOVE_SPEED = 0.5;
+        this.SKY_OBJ_BASE_SPEED = 0.25;
         this.isPlayerLocked = false;
         this.playerJumpImpulse = 0;
         this.isMaxJumpHeightReached = false;
@@ -29,12 +32,14 @@ export default class GameWorld extends PIXI.Container {
 
     initWorld() {
         for(let i = 0; i < this.FLOOR_TILES_QUANTITY; i++) {
-            this.spawnGameObject(WorldObject.TYPES.FLOOR)
+            this.spawnWorldObject(WorldObject.TYPES.FLOOR);
         }
+        this.spawnWorldObject(WorldObject.TYPES.OBSTACLE);
+        this.spawnWorldObject(WorldObject.TYPES.SKY_OBJECT);
 
 
-        this.player = this.addChild(new Sprite('dinosaur'));
-        this.player.scale.set(0.4);
+        this.player = this.addChild(new Sprite(PIXI.Texture.from('cactus_1')));
+        this.player.scale.set(this.floorTiles[0].scale.x);
         this.player.position.set(this.WIDTH * 0.1, this.HEIGHT*0.95 - this.FLOOR_TILE_WIDTH/2 - this.player.height/2);
         this.FLOOR_Y = this.player.y;
         this.jumpHeight.min  = this.player.y - this.jumpHeight.min;
@@ -53,13 +58,22 @@ export default class GameWorld extends PIXI.Container {
         this.isJumpKeyPressed = false;
     }
 
-    spawnGameObject(type) {
-        if(type === WorldObject.TYPES.FLOOR || type === WorldObject.TYPES.SKY_OBJECT) {
-            let floorTile = this.addChild(new WorldObject('floor_tile', WorldObject.TYPES.FLOOR));
-            floorTile.view.scale.set(this.FLOOR_TILE_WIDTH / floorTile.view.width);
+    spawnWorldObject(type) {
+        const worldObj = this.addChild(WorldObject.getRandomObj(type));
+        worldObj.view.scale.set(this.WORLD_SCALE);
+        if(type == WorldObject.TYPES.FLOOR) {
             const lastTilePosX = this.floorTiles.length > 0 ? this.floorTiles[this.floorTiles.length - 1].x : 0;
-            floorTile.position.set(lastTilePosX + floorTile.view.width, this.HEIGHT * 0.95);
-            this.floorTiles.push(floorTile);
+            worldObj.position.set(lastTilePosX + worldObj.view.width, this.HEIGHT * 0.95);
+            this.floorTiles.push(worldObj);
+        }
+        else if(type == WorldObject.TYPES.SKY_OBJECT) {
+            worldObj.position.set(this.WIDTH + worldObj.view.width, this.HEIGHT * 0.1);
+            worldObj.speed = this.SKY_OBJ_BASE_SPEED * (1 + Math.random());
+            this.skyObjects.push(worldObj);
+        }
+        else if(type == WorldObject.TYPES.OBSTACLE) {
+            worldObj.position.set(this.WIDTH + worldObj.view.width, this.HEIGHT * 0.95);
+            this.obstacles.push(worldObj);
         }
     }
 
@@ -69,7 +83,58 @@ export default class GameWorld extends PIXI.Container {
                 const obj = arr.shift();
                 obj.parent.removeChild(obj);
                 if(obj.type == WorldObject.TYPES.FLOOR) {
-                    this.spawnGameObject(WorldObject.TYPES.FLOOR)
+                    this.spawnWorldObject(WorldObject.TYPES.FLOOR)
+                }
+                else {
+                    this.queueWorldObject(obj.type);
+                }
+            }
+        }
+    }
+
+    queueWorldObject(type) {
+        if(type == WorldObject.TYPES.SKY_OBJECT) {
+            this.objectsToSpawn.push({
+                type: type,
+                spawnIn: Math.random() * 3000,
+            });
+        }
+        else if(type == WorldObject.TYPES.OBSTACLE) {
+            this.objectsToSpawn.push({
+                type: type,
+                spawnIn: Math.random() * 1000,
+            });
+        }
+    }
+
+    spawnQueuedObjects(delta) {
+        for (const obj of this.objectsToSpawn) {
+            obj.spawnIn -= delta;
+            if(obj.spawnIn <= 0) {
+                this.spawnWorldObject(obj.type)
+            }
+        }
+
+        let arrCleared = !Boolean(this.objectsToSpawn.length);
+        while (!arrCleared) {
+            for(let i = 0; i < this.objectsToSpawn.length; i++) {
+                if(i == this.objectsToSpawn.length - 1)
+                    arrCleared = true;
+                if(this.objectsToSpawn[i].spawnIn <= 0) {
+                    this.objectsToSpawn.splice(i, 1);
+                    break;
+                }
+            }
+        }
+    }
+
+    moveWorldObjects(delta) {
+        for(let arr of this.allObjectsArrays) {
+            for(let gameObj of arr) {
+                const speed = gameObj.type === WorldObject.TYPES.SKY_OBJECT ? gameObj.speed : this.PLAYER_MOVE_SPEED;
+                gameObj.x -= speed * delta;
+                if(gameObj.x < -gameObj.view.width/2) {
+                    gameObj.isGarbage = true;
                 }
             }
         }
@@ -77,17 +142,7 @@ export default class GameWorld extends PIXI.Container {
 
     tick(delta) {
 
-        for(let arr of this.allObjectsArrays) {
-            for(let gameObj of arr) {
-                gameObj.x -= this.PLAYER_MOVE_SPEED * delta;
-                if(gameObj.x < -gameObj.view.width/2) {
-                    gameObj.isGarbage = true;
-                }
-            }
-        }
-
-        this.destroyGarbageObjects();
-
+        console.log(delta)
         //jump high
         if(this.isJumpKeyPressed && !this.isMaxJumpHeightReached) {
             this.player.y -= 30;
@@ -114,6 +169,10 @@ export default class GameWorld extends PIXI.Container {
                     this.isPlayerLocked = false;
                 }
         }
+
+        this.moveWorldObjects(delta);
+        this.destroyGarbageObjects();
+        this.spawnQueuedObjects(delta);
     }
 
 }

@@ -5,7 +5,7 @@ import LayoutManager from "./libs/LayoutManager";
 class GameController {
     constructor() {
         this.container = null;
-        this.size = {w: 960, h: 960};
+        this.size = {w: 720, h: 720};
         this.app = null;
         this.currentWindow = null;
     }
@@ -66,7 +66,7 @@ class GameController {
     tick() {
         let delta = PIXI.Ticker.shared.elapsedMS;
 
-        if(window.SpineSprite) SpineSprite.update(delta);
+        // if(window.SpineSprite) SpineSprite.update(delta);
         // if(window.ParticlesSprite) ParticlesSprite.update(delta);
 
         if(this.currentWindow && this.currentWindow.tick) {

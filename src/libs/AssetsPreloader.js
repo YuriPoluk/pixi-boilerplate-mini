@@ -5,6 +5,7 @@ import FontFaceObserver from 'fontfaceobserver'
 export default class AssetsPreloader {
     constructor() {
         this.fontsLoaded = false;
+        this.preloaderFinished = false;
         this.endCallback = null;
     }
 
@@ -46,6 +47,7 @@ export default class AssetsPreloader {
         this.loadFonts();
 
         PIXI.Loader.shared.load(function(loader, resources) {
+            self.preloaderFinished = true;
             self.finish();
         });
     }
@@ -74,9 +76,9 @@ export default class AssetsPreloader {
 
     finish() {
         if(!this.fontsLoaded) return;
+        if(!this.preloaderFinished) return;
 
         console.log('ASSETS PRELOADING FINISHED');
-        console.log(PIXI.Loader.shared.resources)
         if(this.endCallback) this.endCallback();
     };
 }
