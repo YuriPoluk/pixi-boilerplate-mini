@@ -42,7 +42,7 @@ class GameController {
 
     initLayoutManager() {
         this.layoutManager = LayoutManager;
-        setTimeout(LayoutManager.fitLayout.bind(LayoutManager), 200);
+        LayoutManager.fitLayout.bind(LayoutManager)();
 
         let resizeTimeout, self = this;
         window.addEventListener("resize", function() {

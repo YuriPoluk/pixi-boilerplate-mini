@@ -11,7 +11,7 @@ export default class WorldObject extends Sprite {
         else if(Array.isArray(textureName)) {
             this.view = this.addChild(PIXI.AnimatedSprite.fromFrames(textureName));
             this.view.play();
-            // this.view.animationSpeed = textureName.length / 24;
+            this.view.animationSpeed = textureName.length / 24;
         }
     }
 }
@@ -28,7 +28,6 @@ WorldObject.getRandomObj = (objType) => {
             return new WorldObject(WorldObject.TYPES.FLOOR, 'floor_tile_' + Math.floor(Math.random() * 3));
         case WorldObject.TYPES.SKY_OBJECT:
             const rand = Math.random();
-            return new WorldObject(WorldObject.TYPES.SKY_OBJECT, 'cloud');
             if(rand <= 0.5) {
                 return new WorldObject(WorldObject.TYPES.SKY_OBJECT, 'cloud');
             }
