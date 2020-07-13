@@ -40,7 +40,7 @@ const babelOptions = (preset) => {
 module.exports = {
     context: path.resolve(__dirname, 'src'),
     mode: 'development',
-    entry: ['@babel/polyfill', './index.ts'],
+    entry: ['./index.ts'],
     resolve: {
         extensions: [ '.tsx', '.ts', '.js' ],
     },
@@ -63,7 +63,7 @@ module.exports = {
         }),
         new CleanWebpackPlugin(),
         new CopyWebpackPlugin({
-            patterns: [
+            patterns: [, also
                 {
                     from: path.resolve(__dirname, 'src/assets'),
                     to: path.resolve(__dirname, 'dist/assets')
