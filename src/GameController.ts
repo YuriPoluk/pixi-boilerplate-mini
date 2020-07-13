@@ -1,10 +1,12 @@
 import MainGame from './MainGame'
 import AssetsPreloader from './libs/AssetsPreloader';
 import GameScene from "./GameScene";
+import {LayoutManager} from "./libs/LayoutManager";
 
 export default class GameController {
     private static instance: GameController;
     private preloader: AssetsPreloader;
+    layoutManager!: LayoutManager;
     app: PIXI.Application;
     size: {w: number, h: number};
     currentWindow!: GameScene;
@@ -16,7 +18,7 @@ export default class GameController {
         this.app = new PIXI.Application({
             transparent: false,
             backgroundColor : 0x000000,
-            resizeTo: parent,
+            // resizeTo: parent,
             view: parent || document.body,
             antialias: true
         });
@@ -25,6 +27,7 @@ export default class GameController {
 
         this.preloader = new AssetsPreloader(this.start.bind(this));
         this.preloader.preload();
+        this.initLayoutManager();
 
         //@ts-ignore
         window.GAME = this;
@@ -45,6 +48,18 @@ export default class GameController {
         }
 
         return GameController.instance;
+    }
+
+    initLayoutManager(): void {
+        this.layoutManager = new LayoutManager(this);
+        this.layoutManager.fitLayout();
+        window.addEventListener("resize", this.onResize.bind(this));
+        let resizeTimeout: any;
+        window.addEventListener("resize", () => {
+            if(resizeTimeout)
+                clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(this.layoutManager.fitLayout.bind(this.layoutManager), 200);
+        });
     }
 
     showWindow(w: GameScene): GameScene {

@@ -36,21 +36,21 @@ export class LayoutManager {
         let gw, gh;
 
         if (LayoutManager.orientation === Orientation.LANDSCAPE) {
-            gh = this.gameController.size.w;
-            gw = Math.floor(gh * (w / h));
+            gh = w;
+            gw = h;
 
-            if(gw < this.gameController.size.h) {
-                gw = this.gameController.size.h;
-                gh = Math.floor(this.gameController.size.h * (h / w));
-            }
+            // if(gw < this.gameController.size.h) {
+            //     gw = this.gameController.size.h;
+            //     gh = Math.floor(this.gameController.size.h * (h / w));
+            // }
         } else {
-            gh = this.gameController.size.h;
-            gw = Math.floor(gh * (w / h));
+            gh = h;
+            gw = w;
 
-            if(gw < this.gameController.size.w) {
-                gw = this.gameController.size.w;
-                gh = Math.floor(this.gameController.size.w * (h / w));
-            }
+            // if(gw < this.gameController.size.w) {
+            //     gw = this.gameController.size.w;
+            //     gh = Math.floor(this.gameController.size.w * (h / w));
+            // }
         }
 
         this.gameController.app.renderer.resize(gw, gh);

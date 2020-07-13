@@ -50,8 +50,8 @@ export default class MainGame extends GameScene  {
     }
 
     onResize(): void {
-        const w = this.gameController.app.renderer.screen.width
-        const h = this.gameController.app.renderer.screen.height
+        const w = this.gameController.app.renderer.width
+        const h = this.gameController.app.renderer.height
 
         this.background.width = w;
         this.background.height = h;
