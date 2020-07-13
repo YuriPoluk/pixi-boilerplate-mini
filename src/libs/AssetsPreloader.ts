@@ -1,20 +1,23 @@
-import ASSETS from '../ASSETS_CONFIG.js'
-import EXTERNAL_ASSETS from '../EXTERNAL_ASSETS_CONFIG.js'
+import { ASSETS_CONFIG } from '../ASSETS_CONFIG'
 import FontFaceObserver from 'fontfaceobserver'
+import * as PIXI from 'pixi.js';
 
 export default class AssetsPreloader {
-    constructor() {
+    fontsLoaded: boolean;
+    preloaderFinished: boolean;
+    endCallback: () => void;
+
+    constructor(endCallback: () => void) {
         this.fontsLoaded = false;
         this.preloaderFinished = false;
-        this.endCallback = null;
+        this.endCallback = endCallback;
     }
 
-    cdnPath(filename) {
+    cdnPath(filename: string) {
         return ("./assets/" + filename);
     };
 
-    preload(callback) {
-        this.endCallback = callback;
+    preload() {
 
         const loaderOptions = {
             loadType: PIXI.LoaderResource.LOAD_TYPE.IMAGE,
@@ -22,25 +25,14 @@ export default class AssetsPreloader {
         };
 
         let self = this;
-        for(const assetType in ASSETS) {
+        for(const assetType in ASSETS_CONFIG) {
             if(assetType == 'fonts')
                 continue;
-            ASSETS[assetType].forEach(function(asset) {
+            ASSETS_CONFIG[assetType].forEach(function(asset: string) {
                 let url = self.cdnPath(assetType + '/' + asset);
                 let name = asset.split(".")[0];
                 let options = assetType == 'images' ? loaderOptions : {};
                 PIXI.Loader.shared.add(name, url, options);
-            });
-        }
-
-        for(const assetType in EXTERNAL_ASSETS) {
-            if(assetType == 'fonts')
-                continue;
-            EXTERNAL_ASSETS[assetType].forEach(function(asset) {
-                let url = asset.url;
-                let name = asset.name;
-                let options = (asset.name.split(".")[1] == "png") ? loaderOptions : {};
-                PIXI.Loader.shared.add(name, url, loaderOptions);
             });
         }
 
@@ -53,9 +45,9 @@ export default class AssetsPreloader {
     }
 
     loadFonts() {
-        const observer = [];
-        const styles = document?.styleSheets[0];
-        ASSETS.fonts?.forEach(font => {
+        const observer: Array<Promise<void>> = [];
+        const styles = document?.styleSheets[0] as CSSStyleSheet;
+        ASSETS_CONFIG.fonts?.forEach(font => {
             let name = font.split(".")[0];
             let url = "../assets/fonts/" + font;
             styles.insertRule(`@font-face {font-family: "${name}"; src: url("${url}");}`);
@@ -63,12 +55,14 @@ export default class AssetsPreloader {
             observer.push(new FontFaceObserver('Pangolin').load());
         });
 
+        //@ts-ignore
         Promise.all(observer)
             .then(
                 () => {
                     this.fontsLoaded = true;
                     this.finish();
                 },
+                //@ts-ignore
                 err => {
                     console.error('Failed to load fonts!', err);
                 });
@@ -78,7 +72,7 @@ export default class AssetsPreloader {
         if(!this.fontsLoaded) return;
         if(!this.preloaderFinished) return;
 
-        console.log('ASSETS PRELOADING FINISHED');
+        console.log('ASSETS_CONFIG PRELOADING FINISHED');
         if(this.endCallback) this.endCallback();
     };
 }

@@ -1,9 +1,16 @@
-import Sprite from './libs/Sprite.js'
-import LayoutManager from "./libs/LayoutManager";
+import Sprite from './libs/Sprite'
+import { LayoutManager, Orientation } from './libs/LayoutManager';
 import GameController from "./GameController";
 import GameWorld from "./GameWorld";
+import GameScene from './GameScene'
 
-export default class MainGame extends Sprite {
+export default class MainGame extends GameScene  {
+    background!: PIXI.Sprite;
+    gameWorld!: GameWorld;
+    UICnt!: PIXI.Sprite;
+    retryBtn!: PIXI.Sprite;
+    gameController = GameController.getInstance();
+
     constructor() {
         super();
         this.createChildren();
@@ -15,7 +22,7 @@ export default class MainGame extends Sprite {
         document.addEventListener('keyup', this.onKeyUp.bind(this));
     }
 
-    createChildren() {
+    createChildren(): void {
         this.background = this.addChild(new Sprite('sky'));
         this.gameWorld = this.addChild(new GameWorld());
         this.UICnt = this.addChild(new Sprite());
@@ -24,27 +31,27 @@ export default class MainGame extends Sprite {
         this.retryBtn.visible = false;
     }
 
-    onKeyDown(key) {
-        const handlers = {
+    onKeyDown(kbEvent: KeyboardEvent): void {
+        const handlers: {[index: string]: Function} = {
             ' ': this.gameWorld.onJumpKeyDown,
             'Control': this.gameWorld.onCrouchKeyDown
         }
-        if(handlers[key.key])
-            handlers[key.key].bind(this.gameWorld)();
+        if(handlers[kbEvent.key])
+            handlers[kbEvent.key].bind(this.gameWorld)();
     }
 
-    onKeyUp(key) {
-        const handlers = {
+    onKeyUp(kbEvent: KeyboardEvent): void {
+        const handlers: {[index: string]: Function} = {
             ' ': this.gameWorld.onJumpKeyUp,
             'Control': this.gameWorld.onCrouchKeyUp
         }
-        if(handlers[key.key])
-            handlers[key.key].bind(this.gameWorld)();
+        if(handlers[kbEvent.key])
+            handlers[kbEvent.key].bind(this.gameWorld)();
     }
 
-    onResize() {
-        let w = LayoutManager.gameWidth;
-        let h = LayoutManager.gameHeight;
+    onResize(): void {
+        let w = this.gameController.app.renderer.screen.width
+        let h = this.gameController.app.renderer.screen.height
 
         this.background.width = w;
         this.background.height = h;
@@ -52,25 +59,22 @@ export default class MainGame extends Sprite {
         this.gameWorld.scale.set(h*0.5 / this.gameWorld.HEIGHT);
         this.gameWorld.position.set(-w/2, -h/4);
 
-        console.log(w * 0.1, this.retryBtn.width)
-        this.retryBtn.scale.set(w * 0.075 / this.retryBtn.width);
+        this.retryBtn.scale.set(w * 0.075 / this.retryBtn.getLocalBounds().width);
     }
 
-    start() {
+    start(): void {
 
     }
 
-    onGameOver() {
+    onGameOver(): void {
         this.retryBtn.visible = true;
     }
 
-    retry() {
-        GameController.start();
+    retry(): void {
+        this.gameController.start();
     }
 
-
-    tick(delta) {
+    tick(delta: number): void {
         this.gameWorld.tick(delta);
     }
-
 }

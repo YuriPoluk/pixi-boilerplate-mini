@@ -1,10 +1,15 @@
-import Sprite from './libs/Sprite.js'
+import Sprite from './libs/Sprite'
 
+export class Dino extends Sprite {
+    viewCrashed: Sprite;
+    viewJump: Sprite;
+    viewRun: PIXI.AnimatedSprite;
+    viewCrouched: PIXI.AnimatedSprite;
+    state!: DinoStates;
+    currentView!: Sprite | PIXI.AnimatedSprite;
 
-export default class Dino extends Sprite {
     constructor() {
         super();
-        this.state =
         this.viewCrashed = this.addChild(new Sprite('dino_5'));
         this.viewJump = this.addChild(new Sprite('dino_1'));
         let frames = ['dino_2', 'dino_3', 'dino_4']
@@ -34,7 +39,7 @@ export default class Dino extends Sprite {
         this.currentView = this.viewRun;
         this.viewRun.visible = true;
         this.viewRun.play();
-        this.state = Dino.STATES.RUN;
+        this.state = DinoStates.RUN;
     }
 
     crouch() {
@@ -42,35 +47,35 @@ export default class Dino extends Sprite {
         this.currentView = this.viewCrouched;
         this.viewCrouched.visible = true;
         this.viewCrouched.play();
-        this.state = Dino.STATES.CROUCH;
+        this.state = DinoStates.CROUCH;
     }
 
     jump() {
         this.resetViews();
         this.currentView = this.viewJump;
         this.viewJump.visible = true;
-        this.state = Dino.STATES.JUMP;
+        this.state = DinoStates.JUMP;
     }
 
     crash() {
         this.resetViews();
         this.currentView = this.viewCrashed;
         this.viewCrashed.visible = true;
-        this.state = Dino.STATES.CRASH;
+        this.state = DinoStates.CRASH;
     }
 
     resetViews() {
         for (const child of this.children) {
             child.visible = false;
-            if(child.stop)
+            if(child instanceof PIXI.AnimatedSprite)
                 child.stop();
         }
     }
 }
 
-Dino.STATES = {
-    RUN: 0,
-    JUMP: 1,
-    CROUCH: 2,
-    CRASH: 3
+export enum DinoStates {
+    RUN,
+    JUMP,
+    CROUCH,
+    CRASH
 }

@@ -1,1 +1,0 @@
-export default {"atlases":["my-texture.json"],"fonts":["Pangolin.ttf"],"images":["sky.jpg"]};

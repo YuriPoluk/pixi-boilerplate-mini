@@ -1,6 +1,6 @@
 class Sprite extends PIXI.Sprite {
-    constructor(tex) {
-        if(tex && typeof tex == "string") {
+    constructor(tex?: string | PIXI.Texture | undefined) {
+        if(typeof tex == "string") {
             if(PIXI.Loader.shared.resources[tex]) {
                 tex = PIXI.Loader.shared.resources[tex].texture;
             }

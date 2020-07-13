@@ -67,8 +67,8 @@ function createAssetsList(done) {
             contents[dirName] = fs.readdirSync('./src/assets/' + dirName);
         }
     });
-    contents = 'export default ' + JSON.stringify(contents) + ';';
-    return fs.writeFile('src/ASSETS_CONFIG.js', contents, done);
+    contents = 'export const ASSETS_CONFIG: {[index: string]:any} = ' + JSON.stringify(contents) + ';';
+    return fs.writeFile('src/ASSETS_CONFIG.ts', contents, done);
 }
 
 exports.default = series(cleanAssetsFolder, parallel(packAtlases, packImages, packSounds, packSpines, packFonts), createAssetsList)
