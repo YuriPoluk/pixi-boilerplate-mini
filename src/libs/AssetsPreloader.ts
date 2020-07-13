@@ -13,43 +13,42 @@ export default class AssetsPreloader {
         this.endCallback = endCallback;
     }
 
-    cdnPath(filename: string) {
+    cdnPath(filename: string): string {
         return ("./assets/" + filename);
-    };
+    }
 
-    preload() {
+    preload(): void {
 
         const loaderOptions = {
             loadType: PIXI.LoaderResource.LOAD_TYPE.IMAGE,
             xhrType: PIXI.LoaderResource.XHR_RESPONSE_TYPE.BLOB
         };
 
-        let self = this;
         for(const assetType in ASSETS_CONFIG) {
             if(assetType == 'fonts')
                 continue;
-            ASSETS_CONFIG[assetType].forEach(function(asset: string) {
-                let url = self.cdnPath(assetType + '/' + asset);
-                let name = asset.split(".")[0];
-                let options = assetType == 'images' ? loaderOptions : {};
+            ASSETS_CONFIG[assetType].forEach((asset: string) => {
+                const url = this.cdnPath(assetType + '/' + asset);
+                const name = asset.split(".")[0];
+                const options = assetType == 'images' ? loaderOptions : {};
                 PIXI.Loader.shared.add(name, url, options);
             });
         }
 
         this.loadFonts();
 
-        PIXI.Loader.shared.load(function(loader, resources) {
-            self.preloaderFinished = true;
-            self.finish();
+        PIXI.Loader.shared.load(() => {
+            this.preloaderFinished = true;
+            this.finish();
         });
     }
 
-    loadFonts() {
+    loadFonts(): void {
         const observer: Array<Promise<void>> = [];
         const styles = document?.styleSheets[0] as CSSStyleSheet;
         ASSETS_CONFIG.fonts?.forEach(font => {
-            let name = font.split(".")[0];
-            let url = "../assets/fonts/" + font;
+            const name = font.split(".")[0];
+            const url = "../assets/fonts/" + font;
             styles.insertRule(`@font-face {font-family: "${name}"; src: url("${url}");}`);
             console.log(`@font-face {font-family: "${name}"; src: url("${url}");}`);
             observer.push(new FontFaceObserver('Pangolin').load());
@@ -68,12 +67,12 @@ export default class AssetsPreloader {
                 });
     }
 
-    finish() {
+    finish(): void {
         if(!this.fontsLoaded) return;
         if(!this.preloaderFinished) return;
 
-        console.log('ASSETS_CONFIG PRELOADING FINISHED');
+        console.log('ASSETS PRELOADING FINISHED');
         if(this.endCallback) this.endCallback();
-    };
+    }
 }
 

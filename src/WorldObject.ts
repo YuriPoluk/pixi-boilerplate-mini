@@ -31,7 +31,7 @@ export class WorldObject extends Sprite {
         switch (objType) {
             case WorldObjectTypes.FLOOR:
                 return new WorldObject(WorldObjectTypes.FLOOR, 'floor_tile_' + Math.floor(Math.random() * 3));
-            case WorldObjectTypes.SKY_OBJECT:
+            case WorldObjectTypes.SKY_OBJECT: {
                 const rand = Math.random();
                 if(rand <= 0.5) {
                     return new WorldObject(WorldObjectTypes.SKY_OBJECT, 'cloud');
@@ -39,6 +39,7 @@ export class WorldObject extends Sprite {
                 else {
                     return new WorldObject(WorldObjectTypes.SKY_OBJECT, ['bird_1', 'bird_2']);
                 }
+            }
             case WorldObjectTypes.OBSTACLE:
                 return new WorldObject(WorldObjectTypes.OBSTACLE, 'cactus_' + Math.floor(Math.random() * 11));
             default:

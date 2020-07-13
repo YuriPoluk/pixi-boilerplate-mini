@@ -30,7 +30,7 @@ export default class GameController {
         window.GAME = this;
         window.PIXI = PIXI;
 
-        let resizeTimeout: any, self = this;
+        let resizeTimeout: any;
         window.addEventListener("resize", () => {
             if(resizeTimeout)
                 clearTimeout(resizeTimeout);
@@ -45,14 +45,6 @@ export default class GameController {
         }
 
         return GameController.instance;
-    }
-
-    get width() {
-        return this.size.w;
-    }
-
-    get height() {
-        return this.size.h;
     }
 
     showWindow(w: GameScene): GameScene {
@@ -76,12 +68,12 @@ export default class GameController {
     }
 
     tick(): void {
-        let delta = PIXI.Ticker.shared.elapsedMS;
+        const delta = PIXI.Ticker.shared.elapsedMS;
 
         // if(window.SpineSprite) SpineSprite.update(delta);
         // if(window.ParticlesSprite) ParticlesSprite.update(delta);
 
-        if(this?.currentWindow?.tick) {
+        if(this?.currentWindow) {
             this.currentWindow.tick(delta);
         }
     }

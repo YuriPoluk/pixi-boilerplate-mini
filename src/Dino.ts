@@ -34,7 +34,7 @@ export class Dino extends Sprite {
         this.run();
     }
 
-    run() {
+    run(): void {
         this.resetViews();
         this.currentView = this.viewRun;
         this.viewRun.visible = true;
@@ -42,7 +42,7 @@ export class Dino extends Sprite {
         this.state = DinoStates.RUN;
     }
 
-    crouch() {
+    crouch(): void {
         this.resetViews();
         this.currentView = this.viewCrouched;
         this.viewCrouched.visible = true;
@@ -50,21 +50,21 @@ export class Dino extends Sprite {
         this.state = DinoStates.CROUCH;
     }
 
-    jump() {
+    jump(): void {
         this.resetViews();
         this.currentView = this.viewJump;
         this.viewJump.visible = true;
         this.state = DinoStates.JUMP;
     }
 
-    crash() {
+    crash(): void {
         this.resetViews();
         this.currentView = this.viewCrashed;
         this.viewCrashed.visible = true;
         this.state = DinoStates.CRASH;
     }
 
-    resetViews() {
+    resetViews(): void {
         for (const child of this.children) {
             child.visible = false;
             if(child instanceof PIXI.AnimatedSprite)

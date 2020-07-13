@@ -16,9 +16,9 @@ export class LayoutManager {
         this.gameController = gameController;
     }
 
-    fitLayout() {
-        let w = window.innerWidth;
-        let h = window.innerHeight;
+    fitLayout(): void {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
 
 
         if(LayoutManager.width === w && LayoutManager.height === h) return;

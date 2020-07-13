@@ -39,7 +39,7 @@ export default class GameWorld extends PIXI.Container {
         this.initWorld();
     }
 
-    initWorld() {
+    initWorld(): void {
         for(let i = 0; i < this.FLOOR_TILES_QUANTITY; i++) {
             this.spawnWorldObject(WorldObjectTypes.FLOOR);
         }
@@ -54,7 +54,7 @@ export default class GameWorld extends PIXI.Container {
         this.JUMP_HEIGHT.max  = this.dino.y - this.JUMP_HEIGHT.max;
     }
 
-    onJumpKeyDown() {
+    onJumpKeyDown(): void {
         this.isJumpKeyPressed = true;
         if(this.isPlayerLocked || this.dino.state == DinoStates.CROUCH)
             return;
@@ -62,27 +62,29 @@ export default class GameWorld extends PIXI.Container {
         this.isPlayerLocked = true;
     }
 
-    onJumpKeyUp() {
+    onJumpKeyUp(): void {
         this.isJumpKeyPressed = false;
         this.dino.jump();
     }
 
-    onCrouchKeyDown() {
+    onCrouchKeyDown(): void {
         this.isCrouchKeyPressed = true;
         if(!this.isPlayerLocked)
             this.dino.crouch();
     }
 
-    onCrouchKeyUp() {
+    onCrouchKeyUp(): void {
         this.isCrouchKeyPressed = false;
         if(this.dino.state == DinoStates.CROUCH)
             this.dino.run();
     }
 
-    spawnWorldObject(type: WorldObjectTypes) {
+    spawnWorldObject(type: WorldObjectTypes): void {
         const worldObj = this.worldCnt.addChild(WorldObject.getRandomObj(type));
         if(type == WorldObjectTypes.FLOOR) {
+
             const lastTilePosX = this.floorTiles.length > 0 ? this.floorTiles[this.floorTiles.length - 1].x : -this.TILE_WIDTH/2;
+
             worldObj.position.set(lastTilePosX + worldObj.view.width, this.HEIGHT - worldObj.view.height/2);
             this.floorTiles.push(worldObj);
         }
@@ -97,22 +99,29 @@ export default class GameWorld extends PIXI.Container {
         }
     }
 
-    destroyGarbageObjects() {
-        for(let arr of this.allObjectsArrays) {
-            while(arr[0].isGarbage) {
-                const obj = arr.shift();
-                obj.parent.removeChild(obj);
-                if(obj.type == WorldObjectTypes.FLOOR) {
-                    this.spawnWorldObject(WorldObjectTypes.FLOOR)
-                }
-                else {
-                    this.queueWorldObject(obj.type);
-                }
+    destroyGarbageObjects(): void {
+        let garbageObjects: WorldObject[] = [];
+        for(let i = 0; i < this.allObjectsArrays.length; i++) {
+            const arr = this.allObjectsArrays[i];
+            garbageObjects = [...garbageObjects, ...this.allObjectsArrays[i].filter(e => e.isGarbage)];
+            this.allObjectsArrays[i] = this.allObjectsArrays[i].filter(e => !e.isGarbage);
+
+        }
+
+        [ this.floorTiles, this.skyObjects, this.obstacles ] = this.allObjectsArrays;
+
+        for(const obj of garbageObjects) {
+            obj.parent.removeChild(obj);
+            if(obj.type == WorldObjectTypes.FLOOR) {
+                this.spawnWorldObject(WorldObjectTypes.FLOOR)
+            }
+            else {
+                this.queueWorldObject(obj.type);
             }
         }
     }
 
-    queueWorldObject(type: WorldObjectTypes) {
+    queueWorldObject(type: WorldObjectTypes): void {
         if(type == WorldObjectTypes.SKY_OBJECT) {
             this.objectsToSpawn.push({
                 type: type,
@@ -127,7 +136,7 @@ export default class GameWorld extends PIXI.Container {
         }
     }
 
-    spawnQueuedObjects(delta: number) {
+    spawnQueuedObjects(delta: number): void {
         for (const obj of this.objectsToSpawn) {
             obj.spawnIn -= delta;
             if(obj.spawnIn <= 0) {
@@ -135,7 +144,7 @@ export default class GameWorld extends PIXI.Container {
             }
         }
 
-        let arrCleared = !Boolean(this.objectsToSpawn.length);
+        let arrCleared = !this.objectsToSpawn.length;
         while (!arrCleared) {
             for(let i = 0; i < this.objectsToSpawn.length; i++) {
                 if(i == this.objectsToSpawn.length - 1)
@@ -148,10 +157,10 @@ export default class GameWorld extends PIXI.Container {
         }
     }
 
-    moveWorldObjects(delta: number) {
-        for(let arr of this.allObjectsArrays) {
-            for(let gameObj of arr) {
-                const speed = gameObj.type === WorldObjectTypes.SKY_OBJECT ? gameObj.speed : this.PLAYER_MOVE_SPEED;
+    moveWorldObjects(delta: number): void {
+        for(const arr of this.allObjectsArrays) {
+            for(const gameObj of arr) {
+                const speed = gameObj.type === WorldObjectTypes.SKY_OBJECT && gameObj['speed'] ? gameObj.speed : this.PLAYER_MOVE_SPEED;
                 gameObj.x -= speed * delta;
                 if(gameObj.x < -gameObj.view.width/2) {
                     gameObj.isGarbage = true;
@@ -160,7 +169,7 @@ export default class GameWorld extends PIXI.Container {
         }
     }
 
-    controls() {
+    controls(): void {
         //Dino is in the air and crouch button pressed
         if(this.isCrouchKeyPressed && this.isPlayerLocked) {
             this.dino.y += 55;
@@ -176,7 +185,7 @@ export default class GameWorld extends PIXI.Container {
         else {
             //jump high
             if(this.isJumpKeyPressed && !this.isMaxJumpHeightReached) {
-                this.dino.y -= 10;
+                this.dino.y -= 7;
                 if(this.dino.y < this.JUMP_HEIGHT.max) {
                     this.dino.y = this.JUMP_HEIGHT.max;
                     this.isMaxJumpHeightReached = true;
@@ -184,7 +193,7 @@ export default class GameWorld extends PIXI.Container {
             }
             //jump min
             else if(this.dino.y < this.FLOOR_Y && this.isMinJumpHeightReached) {
-                this.dino.y -= 3;
+                this.dino.y -= 2;
                 if(this.dino.y < this.JUMP_HEIGHT.min) {
                     this.dino.y = this.JUMP_HEIGHT.min;
                     this.isMinJumpHeightReached = true;
@@ -192,7 +201,7 @@ export default class GameWorld extends PIXI.Container {
             }
             //fall
             else if(this.dino.y < this.FLOOR_Y) {
-                this.dino.y += 5;
+                this.dino.y += 3;
                 if(this.dino.y >= this.FLOOR_Y) {
                     this.isMaxJumpHeightReached = false;
                     this.isMinJumpHeightReached = false;
@@ -205,7 +214,7 @@ export default class GameWorld extends PIXI.Container {
         }
     }
 
-    checkCollisions() {
+    checkCollisions(): void {
         for(const obstacle of this.obstacles) {
             if( Math.abs(this.dino.x - obstacle.x) < (this.dino.currentView.width + obstacle.view.width)*0.4 &&
                 Math.abs(this.dino.y - obstacle.y) < (this.dino.currentView.height + obstacle.view.height)*0.4) {
@@ -214,13 +223,13 @@ export default class GameWorld extends PIXI.Container {
         }
     }
 
-    onGameOver() {
+    onGameOver(): void {
         this.dino.crash();
         this.isGameOver = true;
         this.emit('game_over');
     }
 
-    tick(delta: number) {
+    tick(delta: number): void {
 
         if(this.isGameOver) return;
 

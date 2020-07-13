@@ -63,7 +63,7 @@ module.exports = {
         }),
         new CleanWebpackPlugin(),
         new CopyWebpackPlugin({
-            patterns: [, also
+            patterns: [
                 {
                     from: path.resolve(__dirname, 'src/assets'),
                     to: path.resolve(__dirname, 'dist/assets')

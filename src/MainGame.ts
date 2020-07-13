@@ -32,7 +32,7 @@ export default class MainGame extends GameScene  {
     }
 
     onKeyDown(kbEvent: KeyboardEvent): void {
-        const handlers: {[index: string]: Function} = {
+        const handlers: { [index: string]: () => void } = {
             ' ': this.gameWorld.onJumpKeyDown,
             'Control': this.gameWorld.onCrouchKeyDown
         }
@@ -41,7 +41,7 @@ export default class MainGame extends GameScene  {
     }
 
     onKeyUp(kbEvent: KeyboardEvent): void {
-        const handlers: {[index: string]: Function} = {
+        const handlers: { [index: string]: () => void } = {
             ' ': this.gameWorld.onJumpKeyUp,
             'Control': this.gameWorld.onCrouchKeyUp
         }
@@ -50,8 +50,8 @@ export default class MainGame extends GameScene  {
     }
 
     onResize(): void {
-        let w = this.gameController.app.renderer.screen.width
-        let h = this.gameController.app.renderer.screen.height
+        const w = this.gameController.app.renderer.screen.width
+        const h = this.gameController.app.renderer.screen.height
 
         this.background.width = w;
         this.background.height = h;
