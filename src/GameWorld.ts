@@ -102,7 +102,6 @@ export default class GameWorld extends PIXI.Container {
     destroyGarbageObjects(): void {
         let garbageObjects: WorldObject[] = [];
         for(let i = 0; i < this.allObjectsArrays.length; i++) {
-            const arr = this.allObjectsArrays[i];
             garbageObjects = [...garbageObjects, ...this.allObjectsArrays[i].filter(e => e.isGarbage)];
             this.allObjectsArrays[i] = this.allObjectsArrays[i].filter(e => !e.isGarbage);
 

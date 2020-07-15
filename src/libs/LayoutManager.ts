@@ -20,47 +20,40 @@ export class LayoutManager {
         const w = window.innerWidth;
         const h = window.innerHeight;
 
-
         if(LayoutManager.width === w && LayoutManager.height === h) return;
-
-        document.body.style.width = w + "px";
-        document.body.style.height = h + "px";
-
-        LayoutManager.width = w;//1920
-        LayoutManager.height = h;//1080
-        LayoutManager.orientation = w > h ? Orientation.LANDSCAPE : Orientation.PORTRAIT;//Landscape
-
-        if (!CONFIG.portraitEnabled) LayoutManager.orientation = Orientation.LANDSCAPE;
-        if (!CONFIG.landscapeEnabled) LayoutManager.orientation = Orientation.PORTRAIT;
-
-        let gw, gh;
-
-        if (LayoutManager.orientation === Orientation.LANDSCAPE) {
-            gh = w;
-            gw = h;
-
-            // if(gw < this.gameController.size.h) {
-            //     gw = this.gameController.size.h;
-            //     gh = Math.floor(this.gameController.size.h * (h / w));
-            // }
-        } else {
-            gh = h;
-            gw = w;
-
-            // if(gw < this.gameController.size.w) {
-            //     gw = this.gameController.size.w;
-            //     gh = Math.floor(this.gameController.size.w * (h / w));
-            // }
-        }
-
-        this.gameController.app.renderer.resize(gw, gh);
 
         this.gameController.app.view.style.width = w + "px";
         this.gameController.app.view.style.height = h + "px";
 
+        LayoutManager.orientation = w > h ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
+
+        if (!CONFIG.portraitEnabled) LayoutManager.orientation = Orientation.LANDSCAPE;
+        if (!CONFIG.landscapeEnabled) LayoutManager.orientation = Orientation.PORTRAIT;
+
+        const gameRatio = this.gameController.size.w / this.gameController.size.h;
+        const canvasRatio = w/h;
+        let gw, gh;//new renderer dimentions
+
+        if(gameRatio > canvasRatio) {
+            gh = this.gameController.size.h;
+            gw = Math.floor(gh * canvasRatio);
+        }
+        else {
+            gw = this.gameController.size.w;
+            gh = Math.floor(gw * canvasRatio);
+        }
+
+        if(LayoutManager.orientation == Orientation.LANDSCAPE) {
+            const temp = gw;
+            gw = gh;
+            gh = temp;
+        }
+
+
         LayoutManager.gameWidth = gw;
         LayoutManager.gameHeight = gh;
 
+        this.gameController.app.renderer.resize(gw, gh);
         this.gameController.onResize();
     }
 }

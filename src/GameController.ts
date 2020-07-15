@@ -12,13 +12,11 @@ export default class GameController {
     currentWindow!: GameScene;
 
     constructor(parent: HTMLCanvasElement) {
-        console.log('GAME CONTROLLER CONSTRUCTOR')
         this.size = {w: 800, h: 600};
 
         this.app = new PIXI.Application({
             transparent: false,
             backgroundColor : 0x000000,
-            // resizeTo: parent,
             view: parent || document.body,
             antialias: true
         });
@@ -58,7 +56,7 @@ export default class GameController {
         window.addEventListener("resize", () => {
             if(resizeTimeout)
                 clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(this.layoutManager.fitLayout.bind(this.layoutManager), 200);
+            resizeTimeout = setTimeout(this.layoutManager.fitLayout.bind(this.layoutManager), 100);
         });
     }
 

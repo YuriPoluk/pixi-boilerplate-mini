@@ -1,4 +1,3 @@
-import { LayoutManager } from './libs/LayoutManager';
 import GameController from "./GameController";
 
 export default abstract class GameScene extends PIXI.Container {
