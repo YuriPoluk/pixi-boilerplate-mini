@@ -1,13 +1,17 @@
-import GameController from "./GameController";
+import GameController from './GameController'
 
 export default abstract class GameScene extends PIXI.Container {
-    gameController = GameController.getInstance();
+    gameController = GameController.getInstance()
 
     constructor() {
-        super();
+        super()
     }
 
-    abstract onResize(): void;
+    abstract init?(): void
 
-    abstract tick(delta: number): void;
+    abstract resize(): void
+
+    abstract update(delta: number): void
+
+    abstract beforeDestroy?(): void
 }
