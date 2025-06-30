@@ -19,9 +19,9 @@ export default class MainGame extends GameScene {
         this.background.width = layoutManager.width
         this.background.height = layoutManager.height
 
-        if (layoutManager.orientation == Orientation.LANDSCAPE) {
-        } else {
-        }
+        // if (layoutManager.orientation == Orientation.LANDSCAPE) {
+        // } else {
+        // }
     }
 
     update(delta: number) {

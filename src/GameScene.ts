@@ -1,4 +1,5 @@
 import GameController from './GameController'
+import * as PIXI from 'pixi.js'
 
 export default abstract class GameScene extends PIXI.Container {
     gameController = GameController.getInstance()

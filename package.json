@@ -1,15 +1,14 @@
 {
     "name": "pixi_boilerplate",
     "version": "1.0.0",
-    "description": "simple boilerplate for 2d games using pixi.js, typescript and webpack",
+    "description": "simple boilerplate for 2d games using pixi.js, typescript and vite",
     "main": "src/js/main.js",
     "keywords": [
-        "pixi.js",
-        "webpack"
+        "pixi.js"
     ],
     "scripts": {
-        "dev": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development webpack-dev-server --mode development --open",
-        "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production webpack --mode production",
+        "dev": "vite",
+        "build": "vite build",
         "lint": "eslint --fix --ext .ts . ",
         "format": "prettier --write \"**/*.+(js|ts|json)\"",
         "lint & format": "npm run lint && npm run format"
@@ -55,6 +54,7 @@
         "mini-css-extract-plugin": "^0.9.0",
         "prettier": "^3.2.5",
         "style-loader": "^1.2.1",
+        "vite": "^7.0.0",
         "webpack": "^4.43.0",
         "webpack-cli": "^3.3.11",
         "webpack-dev-server": "^3.11.0",

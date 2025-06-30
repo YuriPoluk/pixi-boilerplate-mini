@@ -1,3 +1,5 @@
+import * as PIXI from 'pixi.js'
+
 class Sprite extends PIXI.Sprite {
     constructor(tex?: string | PIXI.Texture | undefined) {
         if (typeof tex == 'string') {

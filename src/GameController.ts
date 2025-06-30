@@ -2,6 +2,7 @@ import MainGame from './MainGame'
 import AssetsPreloader from './utils/AssetsPreloader'
 import GameScene from './GameScene'
 import { LayoutManager } from './utils/LayoutManager'
+import * as PIXI from 'pixi.js'
 
 export default class GameController {
     app: PIXI.Application

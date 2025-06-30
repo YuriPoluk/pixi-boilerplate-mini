@@ -29,6 +29,7 @@ export default class AssetsPreloader {
                 const url = this.cdnPath(assetType + '/' + asset)
                 const name = asset.split('.')[0]
                 const options = assetType == 'images' ? loaderOptions : {}
+                console.log(name, url, options)
                 PIXI.Loader.shared.add(name, url, options)
             })
         }
@@ -46,14 +47,14 @@ export default class AssetsPreloader {
         const styles = document?.styleSheets[0] as CSSStyleSheet
         ASSETS_CONFIG.fonts?.forEach(font => {
             const name = font.split('.')[0]
-            const url = '../assets/fonts/' + font
+            const url = './assets/fonts/' + font
             styles.insertRule(
                 `@font-face {font-family: "${name}"; src: url("${url}");}`,
             )
             console.log(
                 `@font-face {font-family: "${name}"; src: url("${url}");}`,
             )
-            observer.push(new FontFaceObserver('Pangolin').load())
+            observer.push(new FontFaceObserver(name).load())
         })
 
         Promise.all(observer).then(
@@ -65,6 +66,8 @@ export default class AssetsPreloader {
                 console.error('Failed to load fonts!', err)
             },
         )
+        this.fontsLoaded = true
+        this.finish()
     }
 
     finish(): void {
