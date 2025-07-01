@@ -14,7 +14,7 @@ export default class AssetsPreloader {
     }
 
     cdnPath(filename: string): string {
-        return './assets/' + filename
+        return './public/assets/' + filename
     }
 
     preload(): void {
@@ -66,8 +66,6 @@ export default class AssetsPreloader {
                 console.error('Failed to load fonts!', err)
             },
         )
-        this.fontsLoaded = true
-        this.finish()
     }
 
     finish(): void {

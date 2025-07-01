@@ -3,7 +3,7 @@ import { Orientation } from './utils/LayoutManager'
 import GameScene from './GameScene'
 
 export default class MainGame extends GameScene {
-    background!: PIXI.Sprite
+    background!: Sprite
 
     constructor() {
         super()
@@ -11,7 +11,7 @@ export default class MainGame extends GameScene {
     }
 
     init(): void {
-        this.background = this.addChild(new Sprite('sky'))
+        this.background = this.addChild(new Sprite('cards_background'))
     }
 
     resize(): void {
@@ -22,9 +22,5 @@ export default class MainGame extends GameScene {
         // if (layoutManager.orientation == Orientation.LANDSCAPE) {
         // } else {
         // }
-    }
-
-    update(delta: number) {
-        
     }
 }

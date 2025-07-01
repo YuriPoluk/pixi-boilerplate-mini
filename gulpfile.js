@@ -6,7 +6,23 @@ const texturePacker = require('gulp-free-tex-packer')
 const rename = require('gulp-rename')
 
 function cleanAssetsFolder() {
-    return src('src/assets/*', { read: false }).pipe(clean())
+    return parallel(cleanAtlases, cleanImages, cleanSpines, cleanSounds)
+}
+
+function cleanAtlases() {
+    return src('public/assets/atlases', { read: false, allowEmpty: true }).pipe(clean())
+}
+
+function cleanImages() {
+    return src('public/assets/images', { read: false, allowEmpty: true }).pipe(clean())
+}
+
+function cleanSpines() {
+    return src('public/assets/spines', { read: false, allowEmpty: true }).pipe(clean())
+}
+
+function cleanSounds() {
+    return src('public/assets/sounds', { read: false, allowEmpty: true }).pipe(clean())
 }
 
 function packAtlases() {
@@ -26,47 +42,47 @@ function packAtlases() {
                 prependFolderName: true,
             }),
         )
-        .pipe(dest('src/assets/atlases'))
+        .pipe(dest('public/assets/atlases'))
 }
 
 function packImages(done) {
     return src(path.join('src/assets_raw/images', '/**/*'))
         .pipe(rename({ dirname: '' }))
-        .pipe(dest('src/assets/images'))
+        .pipe(dest('public/assets/images'))
 }
 
 function packSpines(done) {
     return src(path.join('/src/assets_raw/spines', '/**/*'))
         .pipe(rename({ dirname: '' }))
-        .pipe(dest('src/assets/spines'))
+        .pipe(dest('public/assets/spines'))
 }
 
 function packSounds(done) {
     return src(path.join('/src/assets_raw/sounds', '/**/*'))
         .pipe(rename({ dirname: '' }))
-        .pipe(dest('src/assets/sounds'))
+        .pipe(dest('public/assets/sounds'))
 }
 
 function packFonts(done) {
     return src(path.join('/src/assets_raw/fonts', '/**/*'))
         .pipe(rename({ dirname: '' }))
-        .pipe(dest('src/assets/fonts'))
+        .pipe(dest('public/assets/fonts'))
 }
 
 function createAssetsList(done) {
     let contents = {}
-    fs.readdirSync('./src/assets').forEach(function (dirName) {
+    fs.readdirSync('./public/assets').forEach(function (dirName) {
         if (dirName == 'atlases' || dirName == 'spines') {
             let atlases = ''
             let contentsOfAtlases = fs
-                .readdirSync('./src/assets/' + dirName)
+                .readdirSync('./public/assets/' + dirName)
                 .filter(asset => {
                     let separated = asset.split('.')
                     return separated[separated.length - 1] == 'json'
                 })
             contents[dirName] = contentsOfAtlases
         } else {
-            contents[dirName] = fs.readdirSync('./src/assets/' + dirName)
+            contents[dirName] = fs.readdirSync('./public/assets/' + dirName)
         }
     })
     contents =
@@ -77,7 +93,7 @@ function createAssetsList(done) {
 }
 
 exports.default = series(
-    cleanAssetsFolder,
+    parallel(cleanAtlases, cleanImages, cleanSpines, cleanSounds),
     parallel(packAtlases, packImages, packSounds, packSpines, packFonts),
     createAssetsList,
 )

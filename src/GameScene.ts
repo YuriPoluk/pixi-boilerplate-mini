@@ -2,17 +2,17 @@ import GameController from './GameController'
 import * as PIXI from 'pixi.js'
 
 export default abstract class GameScene extends PIXI.Container {
-    gameController = GameController.getInstance()
+    gameController = GameController.Instance
 
     constructor() {
         super()
     }
 
-    abstract init?(): void
+    init?(): void
 
     abstract resize(): void
 
-    abstract update(delta: number): void
+    update?(delta: number): void
 
-    abstract beforeDestroy?(): void
+    beforeDestroy?(): void
 }

@@ -1,0 +1,39 @@
+{
+  "frames": {
+    "arrow_left": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 394,
+        "h": 266
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 1,
+        "w": 394,
+        "h": 266
+      },
+      "sourceSize": {
+        "w": 400,
+        "h": 268
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "https://github.com/odrick/gulp-free-tex-packer",
+    "version": "0.5.1",
+    "image": "my-texture-1.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 398,
+      "h": 270
+    },
+    "scale": 1
+  }
+}

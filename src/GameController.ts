@@ -3,6 +3,7 @@ import AssetsPreloader from './utils/AssetsPreloader'
 import GameScene from './GameScene'
 import { LayoutManager } from './utils/LayoutManager'
 import * as PIXI from 'pixi.js'
+import UI from './UI'
 
 export default class GameController {
     app: PIXI.Application
@@ -11,9 +12,10 @@ export default class GameController {
 
     private static instance: GameController
     private preloader: AssetsPreloader
-    private currentWindow!: GameScene
+    private currentScene!: GameScene
+    private ui!: UI
 
-    constructor(parent: HTMLCanvasElement) {
+    private constructor(parent: HTMLCanvasElement) {
         this.app = new PIXI.Application({
             transparent: false,
             width: this.size.w,
@@ -34,18 +36,12 @@ export default class GameController {
             if (resizeTimeout) clearTimeout(resizeTimeout)
             resizeTimeout = setTimeout(this.resize.bind(this), 100)
         })
-
-        ;(<any>window).GAME = this
         window.PIXI = PIXI
     }
 
-    static getInstance(): GameController {
+    static get Instance(): GameController {
         const parent = document.getElementById('scene') as HTMLCanvasElement
-        if (!GameController.instance) {
-            GameController.instance = new GameController(parent)
-        }
-
-        return GameController.instance
+        return GameController.instance || (GameController.instance = new GameController(parent))
     }
 
     initLayoutManager(): void {
@@ -62,38 +58,43 @@ export default class GameController {
         })
     }
 
-    showWindow(w: GameScene): GameScene {
-        if (this.currentWindow) this.app.stage.removeChild(this.currentWindow)
+    showScene(w: GameScene): GameScene {
+        if (this.currentScene) this.app.stage.removeChild(this.currentScene)
         this.app.stage.addChildAt(w, 0)
         w.position.set(
             this.app.renderer.width / 2,
             this.app.renderer.height / 2,
         )
         w.resize()
-        this.currentWindow = w
-        return this.currentWindow
+        this.currentScene = w
+        return this.currentScene
     }
 
     resize(): void {
-        if (this.currentWindow) {
-            this.currentWindow.position.set(
+        if (this.currentScene) {
+            this.currentScene.position.set(
                 this.app.renderer.width / 2,
                 this.app.renderer.height / 2,
             )
-            this.currentWindow.resize()
+            this.currentScene.resize()
         }
     }
 
     start(): void {
+        this.showScene(new MainGame())
         document.getElementById('loader')!.style.display = 'none'
-        this.showWindow(new MainGame())
+        this.ui = new UI()
+        this.app.stage.addChildAt(this.ui, 0)
+        this.ui.position.set(
+            this.app.renderer.width / 2,
+            this.app.renderer.height / 2,
+        )
+        this.ui.resize()
     }
 
     update(): void {
         const delta = PIXI.Ticker.shared.elapsedMS
 
-        if (this?.currentWindow) {
-            this.currentWindow.update(delta)
-        }
+        this.currentScene?.update?.(delta)
     }
 }
