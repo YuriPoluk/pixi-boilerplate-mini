@@ -84,7 +84,7 @@ export default class GameController {
         this.showScene(new MainGame())
         document.getElementById('loader')!.style.display = 'none'
         this.ui = new UI()
-        this.app.stage.addChildAt(this.ui, 0)
+        this.app.stage.addChildAt(this.ui, 1)
         this.ui.position.set(
             this.app.renderer.width / 2,
             this.app.renderer.height / 2,
