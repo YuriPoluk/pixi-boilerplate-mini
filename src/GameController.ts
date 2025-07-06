@@ -10,7 +10,7 @@ import './utils/loadParser'
 
 export default class GameController {
     app: PIXI.Application
-    size = { w: 800, h: 600 }
+    size = { w: 800, h: 800 }
     layoutManager!: LayoutManager
     scenes: GameScene[] = []
     currentScene!: GameScene
@@ -109,7 +109,7 @@ export default class GameController {
             this.app.renderer.width / 2,
             this.app.renderer.height / 2,
         )
-        
+
         this.resize()
     }
 

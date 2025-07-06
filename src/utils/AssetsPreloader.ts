@@ -23,7 +23,7 @@ export default class AssetsPreloader {
         for (const assetType in ASSETS_CONFIG) {
             if (assetType == 'fonts') continue
             ASSETS_CONFIG[assetType].forEach((asset: string) => {
-                const url = this.cdnPath(assetType + '/' + asset)           
+                const url = this.cdnPath(assetType + '/' + asset)  
                 promises.push(PIXI.Assets.load(url))
             })
         }
@@ -37,11 +37,13 @@ export default class AssetsPreloader {
     }
 
     loadFonts(): void {
+        console.log('LOAD FONTS')
         const observer: Array<Promise<void>> = []
         const styles = document?.styleSheets[0] as CSSStyleSheet
         ASSETS_CONFIG.fonts?.forEach((font: string) => {
             const name = font.split('.')[0]
-            const url = './assets/fonts/' + font
+            const url = import.meta.env.MODE == 'production' ? './fonts/' + font : this.cdnPath('./fonts/' + font)
+            console.log(url)         
             styles.insertRule(
                 `@font-face {font-family: "${name}"; src: url("${url}");}`,
             )

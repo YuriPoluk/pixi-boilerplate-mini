@@ -103,8 +103,7 @@ export default class SceneCards extends GameScene {
     }
 
     resize(): void {
-        const lm = this.gameController.layoutManager
-        const { width, height, orientation } = lm
+        const { width, height, orientation } = this.gameController.layoutManager
 
         this.background.width = width
         this.background.height = height

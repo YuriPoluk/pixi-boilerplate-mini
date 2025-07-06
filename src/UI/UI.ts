@@ -66,13 +66,20 @@ export default class UI extends GameScene {
     }
 
     resize(): void {
-        const layoutManager = this.gameController.layoutManager
-        const { width, height, orientation } = layoutManager
+        const { width, height, orientation } = this.gameController.layoutManager
 
-        if (orientation == Orientation.LANDSCAPE) {
+        const backgroundRatio = this.background.width / this.background.height
+        const screenRatio = width / height
+
+        if (backgroundRatio < screenRatio) {
             this.background.width = width
             this.background.scale.y = this.background.scale.x
+        } else {
+            this.background.height = height
+            this.background.scale.x = this.background.scale.y
+        }
 
+        if (orientation == Orientation.LANDSCAPE) {
             const buttonWidth = width * 0.25
 
             this.button1.width = buttonWidth
@@ -82,7 +89,7 @@ export default class UI extends GameScene {
             this.button2.width = buttonWidth
             this.button2.scale.y = this.button2.scale.x
             this.button2.position.set(0, 0)
-            
+
             this.button3.width = buttonWidth
             this.button3.scale.y = this.button3.scale.x
             this.button3.position.set(0, 0.25 * height)
@@ -91,9 +98,6 @@ export default class UI extends GameScene {
             this.buttonBack.scale.y = this.buttonBack.scale.x
             this.buttonBack.position.set(width/2 - this.buttonBack.width, -height/2 + this.buttonBack.height)
         } else if (orientation == Orientation.PORTRAIT) {
-            this.background.height = height
-            this.background.scale.x = this.background.scale.y
-
             const buttonHeight = height * 0.1
 
             this.button1.height = buttonHeight

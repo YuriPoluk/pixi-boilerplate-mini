@@ -212,10 +212,21 @@ export default class SceneDialog extends GameScene {
     }
 
     resize(): void {
-        const lm = this.gameController.layoutManager
-        const { width, height, orientation } = lm
+        const { width, height, orientation } = this.gameController.layoutManager
         
         const avatarNames = Object.keys(this.avatars)
+
+
+        const backgroundRatio = this.background.width / this.background.height
+        const screenRatio = width / height
+
+        if (backgroundRatio < screenRatio) {
+            this.background.width = width
+            this.background.scale.y = this.background.scale.x
+        } else {
+            this.background.height = height
+            this.background.scale.x = this.background.scale.y
+        }
 
         if (orientation == Orientation.LANDSCAPE) {
             this.background.height = height
