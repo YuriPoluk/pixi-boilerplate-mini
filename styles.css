@@ -24,3 +24,29 @@ p {
     margin: 0 auto;
     text-align: center;
 }
+
+.text-element {
+    position: absolute;
+    top: 80%;
+    font-family: "Arial";
+    font-size: 50px;
+    fill: #ff1010;
+    color: red;
+    width: 95%;
+    left: 0; 
+    right: 0; 
+    margin-inline: auto; 
+    z-index: 11;
+}
+
+@media (orientation: landscape) {
+    .text-element {
+        top: 80%;
+    }
+}
+
+@media (orientation: portrait) {
+    .text-element {
+        top: 85%;
+    }
+}

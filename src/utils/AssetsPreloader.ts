@@ -14,44 +14,35 @@ export default class AssetsPreloader {
     }
 
     cdnPath(filename: string): string {
-        return './public/assets/' + filename
+        return './assets/' + filename
     }
 
-    preload(): void {
-        const loaderOptions = {
-            loadType: PIXI.LoaderResource.LOAD_TYPE.IMAGE,
-            xhrType: PIXI.LoaderResource.XHR_RESPONSE_TYPE.BLOB,
-        }
+    async preload() {
+        const promises: Promise<any>[] = []
 
         for (const assetType in ASSETS_CONFIG) {
             if (assetType == 'fonts') continue
             ASSETS_CONFIG[assetType].forEach((asset: string) => {
-                const url = this.cdnPath(assetType + '/' + asset)
-                const name = asset.split('.')[0]
-                const options = assetType == 'images' ? loaderOptions : {}
-                console.log(name, url, options)
-                PIXI.Loader.shared.add(name, url, options)
+                const url = this.cdnPath(assetType + '/' + asset)           
+                promises.push(PIXI.Assets.load(url))
             })
         }
 
         this.loadFonts()
 
-        PIXI.Loader.shared.load(() => {
-            this.preloaderFinished = true
-            this.finish()
-        })
+        await Promise.all(promises)
+
+        this.preloaderFinished = true
+        this.finish()
     }
 
     loadFonts(): void {
         const observer: Array<Promise<void>> = []
         const styles = document?.styleSheets[0] as CSSStyleSheet
-        ASSETS_CONFIG.fonts?.forEach(font => {
+        ASSETS_CONFIG.fonts?.forEach((font: string) => {
             const name = font.split('.')[0]
             const url = './assets/fonts/' + font
             styles.insertRule(
-                `@font-face {font-family: "${name}"; src: url("${url}");}`,
-            )
-            console.log(
                 `@font-face {font-family: "${name}"; src: url("${url}");}`,
             )
             observer.push(new FontFaceObserver(name).load())

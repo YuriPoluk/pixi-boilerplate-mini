@@ -1,0 +1,63 @@
+{
+  "frames": {
+    "spades_king": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 352,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 352,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 352,
+        "h": 512
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "spades_queen": {
+      "frame": {
+        "x": 2,
+        "y": 518,
+        "w": 352,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 352,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 352,
+        "h": 512
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "https://github.com/odrick/gulp-free-tex-packer",
+    "version": "0.5.4",
+    "image": "my-texture-3.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 356,
+      "h": 1032
+    },
+    "scale": 1
+  }
+}

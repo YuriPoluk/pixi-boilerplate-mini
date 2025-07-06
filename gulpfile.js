@@ -5,10 +5,6 @@ const clean = require('gulp-clean')
 const texturePacker = require('gulp-free-tex-packer')
 const rename = require('gulp-rename')
 
-function cleanAssetsFolder() {
-    return parallel(cleanAtlases, cleanImages, cleanSpines, cleanSounds)
-}
-
 function cleanAtlases() {
     return src('public/assets/atlases', { read: false, allowEmpty: true }).pipe(clean())
 }
@@ -72,6 +68,10 @@ function packFonts(done) {
 function createAssetsList(done) {
     let contents = {}
     fs.readdirSync('./public/assets').forEach(function (dirName) {
+        if (dirName.startsWith('.')) {
+            return
+        }
+
         if (dirName == 'atlases' || dirName == 'spines') {
             let atlases = ''
             let contentsOfAtlases = fs
@@ -82,13 +82,15 @@ function createAssetsList(done) {
                 })
             contents[dirName] = contentsOfAtlases
         } else {
-            contents[dirName] = fs.readdirSync('./public/assets/' + dirName)
+            contents[dirName] = fs.readdirSync('./public/assets/' + dirName).filter(e => !e.startsWith('.'))
         }
     })
     contents =
         'export const ASSETS_CONFIG: {[index: string]:any} = ' +
         JSON.stringify(contents) +
         ';'
+
+    console.log(contents)
     return fs.writeFile('src/ASSETS_CONFIG.ts', contents, done)
 }
 
