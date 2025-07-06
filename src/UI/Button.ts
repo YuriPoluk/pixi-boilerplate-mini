@@ -1,8 +1,12 @@
-import Sprite from "../utils/Sprite"
+import Sprite from '../utils/Sprite'
 import { TextStyle, Text } from 'pixi.js'
 
 export default class Button extends Sprite {
-    constructor(backgroundAssetName: string, onClick: () => void, text?: string,) {
+    constructor(
+        backgroundAssetName: string,
+        onClick: () => void,
+        text?: string,
+    ) {
         super(backgroundAssetName)
 
         if (text) {
@@ -12,11 +16,11 @@ export default class Button extends Sprite {
                 fill: 'white',
                 stroke: '#8c6600',
                 strokeThickness: 4,
-              });
-    
-            const richText = new Text(text, style);
+            })
+
+            const richText = new Text(text, style)
             this.addChild(richText)
-            richText.position.set(- richText.width/2, - richText.height/2)
+            richText.position.set(-richText.width / 2, -richText.height / 2)
         }
 
         this.eventMode = 'static'

@@ -7,7 +7,6 @@ import { gsap } from 'gsap'
 import { Container } from 'pixi.js'
 
 export default class UI extends GameScene {
-
     private background!: Sprite
     private button1!: Sprite
     private button2!: Sprite
@@ -24,30 +23,41 @@ export default class UI extends GameScene {
         this.switchOverlayVisibility = this.switchOverlayVisibility.bind(this)
 
         this.overlayContainer = this.addChild(new Container())
-        this.background = this.overlayContainer.addChild(new Sprite('./assets/images/ui_background.jpg'))
-        this.button1 = this.overlayContainer.addChild(new Button('bt_b', this.setScene1,'CARDS'))
-        this.button2 = this.overlayContainer.addChild(new Button('bt_p', this.setScene2, 'DIALOG'))
-        this.button3 = this.overlayContainer.addChild(new Button('bt_y',this.setScene3,'FIRE'))
-        this.buttonBack = this.addChild(new Button('arrow_left', this.switchOverlayVisibility))
+        this.background = this.overlayContainer.addChild(
+            new Sprite('./assets/images/ui_background.jpg'),
+        )
+        this.button1 = this.overlayContainer.addChild(
+            new Button('bt_b', this.setScene1, 'CARDS'),
+        )
+        this.button2 = this.overlayContainer.addChild(
+            new Button('bt_p', this.setScene2, 'DIALOG'),
+        )
+        this.button3 = this.overlayContainer.addChild(
+            new Button('bt_y', this.setScene3, 'FIRE'),
+        )
+        this.buttonBack = this.addChild(
+            new Button('arrow_left', this.switchOverlayVisibility),
+        )
     }
 
     private overlayVisibility = true
 
     setOverlayVisibility(v: boolean) {
-        if (v == this.overlayVisibility)
-            return
+        if (v == this.overlayVisibility) return
 
         this.overlayVisibility = v
         const targetOpacity = v ? 1 : 0
         gsap.to(this.overlayContainer, {
             alpha: targetOpacity,
-            duration: 0.25
+            duration: 0.25,
         })
     }
 
     switchOverlayVisibility() {
         this.setOverlayVisibility(!this.overlayVisibility)
-        this.overlayVisibility ? this.gameController.currentScene?.onHide?.() : this.gameController.currentScene?.onShow?.()
+        this.overlayVisibility
+            ? this.gameController.currentScene?.onHide?.()
+            : this.gameController.currentScene?.onShow?.()
     }
 
     setScene1() {
@@ -84,7 +94,7 @@ export default class UI extends GameScene {
 
             this.button1.width = buttonWidth
             this.button1.scale.y = this.button1.scale.x
-            this.button1.position.set(0, - 0.25 * height)
+            this.button1.position.set(0, -0.25 * height)
 
             this.button2.width = buttonWidth
             this.button2.scale.y = this.button2.scale.x
@@ -96,25 +106,31 @@ export default class UI extends GameScene {
 
             this.buttonBack.width = width * 0.05
             this.buttonBack.scale.y = this.buttonBack.scale.x
-            this.buttonBack.position.set(width/2 - this.buttonBack.width, -height/2 + this.buttonBack.height)
+            this.buttonBack.position.set(
+                width / 2 - this.buttonBack.width,
+                -height / 2 + this.buttonBack.height,
+            )
         } else if (orientation == Orientation.PORTRAIT) {
             const buttonHeight = height * 0.1
 
             this.button1.height = buttonHeight
             this.button1.scale.x = this.button1.scale.y
-            this.button1.position.set(0, - 0.2 * height)
+            this.button1.position.set(0, -0.2 * height)
 
             this.button2.height = buttonHeight
             this.button2.scale.x = this.button2.scale.y
             this.button2.position.set(0, 0)
-            
+
             this.button3.height = buttonHeight
             this.button3.scale.x = this.button3.scale.y
             this.button3.position.set(0, 0.2 * height)
 
             this.buttonBack.height = height * 0.05
             this.buttonBack.scale.x = this.buttonBack.scale.y
-            this.buttonBack.position.set(width/2 - this.buttonBack.width, -height/2 + this.buttonBack.height)
+            this.buttonBack.position.set(
+                width / 2 - this.buttonBack.width,
+                -height / 2 + this.buttonBack.height,
+            )
         }
     }
 }

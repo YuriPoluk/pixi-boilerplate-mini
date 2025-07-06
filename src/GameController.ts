@@ -35,7 +35,7 @@ export default class GameController {
 
         this.preloader = new AssetsPreloader(this.start.bind(this))
         this.preloader.preload()
-        
+
         this.layoutManager = new LayoutManager(this)
         this.layoutManager.fitLayout()
 
@@ -49,7 +49,9 @@ export default class GameController {
 
     static get Instance(): GameController {
         const canvas = document.getElementById('scene') as HTMLCanvasElement
-        GameController.instance =  GameController.instance || (GameController.instance = new GameController(canvas))
+        GameController.instance =
+            GameController.instance ||
+            (GameController.instance = new GameController(canvas))
         return GameController.instance
     }
 
@@ -63,7 +65,7 @@ export default class GameController {
             this.app.renderer.width / 2,
             this.app.renderer.height / 2,
         )
-        if(w instanceof GameScene) {
+        if (w instanceof GameScene) {
             w.resize()
             this.currentScene = w
             this.currentScene.onShow?.()
@@ -79,7 +81,7 @@ export default class GameController {
     resize(): void {
         this.layoutManager.fitLayout()
 
-        const center = { 
+        const center = {
             x: this.app.renderer.width / 2,
             y: this.app.renderer.height / 2,
         }
@@ -94,8 +96,14 @@ export default class GameController {
     }
 
     async start() {
-        this.scenes = [new SceneCards(this), new SceneDialog(this), new SceneFire(this)]
-        await Promise.all(this.scenes.map(s => s.init ? s.init() : Promise.resolve()))
+        this.scenes = [
+            new SceneCards(this),
+            new SceneDialog(this),
+            new SceneFire(this),
+        ]
+        await Promise.all(
+            this.scenes.map(s => (s.init ? s.init() : Promise.resolve())),
+        )
 
         this.showScene(new PIXI.Container())
 

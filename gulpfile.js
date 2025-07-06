@@ -6,19 +6,27 @@ const texturePacker = require('gulp-free-tex-packer')
 const rename = require('gulp-rename')
 
 function cleanAtlases() {
-    return src('public/assets/atlases', { read: false, allowEmpty: true }).pipe(clean())
+    return src('public/assets/atlases', { read: false, allowEmpty: true }).pipe(
+        clean(),
+    )
 }
 
 function cleanImages() {
-    return src('public/assets/images', { read: false, allowEmpty: true }).pipe(clean())
+    return src('public/assets/images', { read: false, allowEmpty: true }).pipe(
+        clean(),
+    )
 }
 
 function cleanSpines() {
-    return src('public/assets/spines', { read: false, allowEmpty: true }).pipe(clean())
+    return src('public/assets/spines', { read: false, allowEmpty: true }).pipe(
+        clean(),
+    )
 }
 
 function cleanSounds() {
-    return src('public/assets/sounds', { read: false, allowEmpty: true }).pipe(clean())
+    return src('public/assets/sounds', { read: false, allowEmpty: true }).pipe(
+        clean(),
+    )
 }
 
 function packAtlases() {
@@ -82,7 +90,9 @@ function createAssetsList(done) {
                 })
             contents[dirName] = contentsOfAtlases
         } else {
-            contents[dirName] = fs.readdirSync('./public/assets/' + dirName).filter(e => !e.startsWith('.'))
+            contents[dirName] = fs
+                .readdirSync('./public/assets/' + dirName)
+                .filter(e => !e.startsWith('.'))
         }
     })
     contents =

@@ -5,7 +5,7 @@ import GameController from '../GameController'
 import { Assets, HTMLText, NineSlicePlane, Point, Texture } from 'pixi.js'
 import gsap from 'gsap'
 
-//api return types 
+//api return types
 
 type Position = 'left' | 'right'
 type AvatarData = {
@@ -32,7 +32,7 @@ const emojiList = ['sad', 'intrigued', 'satisfied', 'neutral', 'laughing']
 export default class SceneDialog extends GameScene {
     background: Sprite
     dialogueData!: DialogueData[]
-    currentAvatar?: { position: Position, sprite: Sprite }
+    currentAvatar?: { position: Position; sprite: Sprite }
     previousAvatar?: Sprite
     dialog: NineSlicePlane
     textElement: HTMLDivElement
@@ -40,8 +40,12 @@ export default class SceneDialog extends GameScene {
     constructor(gameController: GameController) {
         super(gameController)
 
-        this.background = this.addChild(new Sprite('./assets/images/cc_background.jpg'))
-        this.dialog = this.addChild(new NineSlicePlane(Texture.from('dialog'), 20, 20, 20, 20))
+        this.background = this.addChild(
+            new Sprite('./assets/images/cc_background.jpg'),
+        )
+        this.dialog = this.addChild(
+            new NineSlicePlane(Texture.from('dialog'), 20, 20, 20, 20),
+        )
         this.textElement = document.createElement('div')
         this.textElement.classList.add('text-element')
         document.getElementById('game-container')!.appendChild(this.textElement)
@@ -63,18 +67,19 @@ export default class SceneDialog extends GameScene {
     }
 
     async init() {
-        const url = "https://private-624120-softgamesassignment.apiary-mock.com/v2/magicwords";
+        const url =
+            'https://private-624120-softgamesassignment.apiary-mock.com/v2/magicwords'
 
         try {
-            const response = await fetch(url);
+            const response = await fetch(url)
             if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
+                throw new Error(`Response status: ${response.status}`)
             }
 
             //in prod api result could have some schema validation but I omit that here.
             //The APIresponse contained invalid dialog line (Neighbour avatar doesn't exist) and invalid emoji ( {win} ).
             //I remove the line but leave invalid emoji as is
-            const json = await response.json() as unknown as ApiData
+            const json = (await response.json()) as unknown as ApiData
             this.dialogueData = this.sanitize(json.dialogue)
 
             return Promise.all([
@@ -82,7 +87,7 @@ export default class SceneDialog extends GameScene {
                 this.createAvatars(json.avatars),
             ])
         } catch (error) {
-            console.error(error);
+            console.error(error)
         }
     }
 
@@ -91,9 +96,12 @@ export default class SceneDialog extends GameScene {
     }
 
     replaceTextWithImage(text: string) {
-        emojiList.forEach((emojiName) => {
+        emojiList.forEach(emojiName => {
             const emojiData = this.emojies.find(emj => emj.name == emojiName)
-            text = text.replace(`{${emojiName}}`, `<img src="${emojiData?.url}" style="width: 50px; height: 50px" crossorigin="anonymous">`)
+            text = text.replace(
+                `{${emojiName}}`,
+                `<img src="${emojiData?.url}" style="width: 50px; height: 50px" crossorigin="anonymous">`,
+            )
         })
 
         return text
@@ -104,8 +112,7 @@ export default class SceneDialog extends GameScene {
     private currentDialogueTween?: gsap.core.Timeline
 
     addDialogueLine() {
-        if (this.dialogLineIndex == this.dialogueData.length - 1) 
-            return
+        if (this.dialogLineIndex == this.dialogueData.length - 1) return
 
         const dialogueData = this.dialogueData[this.dialogLineIndex]
         this.dialogLineIndex++
@@ -115,55 +122,90 @@ export default class SceneDialog extends GameScene {
         const previousAvatar = this.currentAvatar || avatar
         this.currentAvatar = avatar
 
-        const xEndPrevious = this.avatarPositions.x[previousAvatar?.position].start
+        const xEndPrevious =
+            this.avatarPositions.x[previousAvatar?.position].start
 
-        const xEndCurrent = this.avatarPositions.x[this.currentAvatar?.position].end
-        const xStartCurrent = this.avatarPositions.x[this.currentAvatar.position].start 
-        this.currentAvatar.sprite.position.set(xStartCurrent, this.avatarPositions.y)
+        const xEndCurrent =
+            this.avatarPositions.x[this.currentAvatar?.position].end
+        const xStartCurrent =
+            this.avatarPositions.x[this.currentAvatar.position].start
+        this.currentAvatar.sprite.position.set(
+            xStartCurrent,
+            this.avatarPositions.y,
+        )
 
-        this.currentDialogueTween = gsap.timeline()
-            .to(previousAvatar.sprite.position, {
-                x: xEndPrevious,
-                duration: 1
-            }, 0)
-            .to(previousAvatar.sprite, {
-                alpha: 0,
-                duration: 1
-            }, 0)
-            .to(this.textElement, {
-                opacity: 0,
-                duration: 1,
-                onComplete: () => {
-                    this.textElement.innerHTML = this.replaceTextWithImage(dialogueData.text)
-                }
-            }, 0)
-            .to(this.currentAvatar.sprite.position, {
-                x: xEndCurrent,
-                duration: 1
-            }, 1)
-            .to(this.currentAvatar.sprite, {
-                alpha: 1,
-                duration: 1
-            }, 1)
-            .to(this.textElement, {
-                opacity: 1,
-                duration: 0.5,
-                onComplete: () => { setTimeout(this.addDialogueLine, 3000) }
-            }, 1)
+        this.currentDialogueTween = gsap
+            .timeline()
+            .to(
+                previousAvatar.sprite.position,
+                {
+                    x: xEndPrevious,
+                    duration: 1,
+                },
+                0,
+            )
+            .to(
+                previousAvatar.sprite,
+                {
+                    alpha: 0,
+                    duration: 1,
+                },
+                0,
+            )
+            .to(
+                this.textElement,
+                {
+                    opacity: 0,
+                    duration: 1,
+                    onComplete: () => {
+                        this.textElement.innerHTML = this.replaceTextWithImage(
+                            dialogueData.text,
+                        )
+                    },
+                },
+                0,
+            )
+            .to(
+                this.currentAvatar.sprite.position,
+                {
+                    x: xEndCurrent,
+                    duration: 1,
+                },
+                1,
+            )
+            .to(
+                this.currentAvatar.sprite,
+                {
+                    alpha: 1,
+                    duration: 1,
+                },
+                1,
+            )
+            .to(
+                this.textElement,
+                {
+                    opacity: 1,
+                    duration: 0.5,
+                    onComplete: () => {
+                        setTimeout(this.addDialogueLine, 3000)
+                    },
+                },
+                1,
+            )
     }
 
-    private avatars: {[key: string]: { position: Position, sprite: Sprite }} = {}
+    private avatars: { [key: string]: { position: Position; sprite: Sprite } } =
+        {}
 
     async createAvatars(avatarData: AvatarData[]) {
         const promises = avatarData.map(async data => {
-
-            const texture = await Assets.load(data.url);
-            const sprite = new Sprite(texture);
+            const texture = await Assets.load(data.url)
+            const sprite = new Sprite(texture)
             sprite.alpha = 0
             const name = data.name
             this.avatars[name] = {
                 sprite: this.addChild(sprite),
-                position: data.position
+                position: data.position,
             }
         })
         const promiseResult = await Promise.all(promises)
@@ -177,24 +219,26 @@ export default class SceneDialog extends GameScene {
         this.emojies = emojiData
 
         return new Promise<void>((resolve, reject) => {
-            const urls = emojiData.map(d => d.url).concat(avatarsData.map(a => a.url))
+            const urls = emojiData
+                .map(d => d.url)
+                .concat(avatarsData.map(a => a.url))
             let imagesLoaded = 0
             const imagesToLoad = urls.length
             let images = []
 
             urls.forEach(url => {
-                var img = new Image();
+                var img = new Image()
                 images.push(img)
-                img.onload = function() {
+                img.onload = function () {
                     imagesLoaded++
                     if (imagesLoaded == imagesToLoad) {
                         images = []
                         resolve()
                     }
                 }
-                img.src = url;
+                img.src = url
             })
-        });
+        })
     }
 
     private avatarPositions = {
@@ -202,20 +246,19 @@ export default class SceneDialog extends GameScene {
         x: {
             left: {
                 start: 0,
-                end: 0
+                end: 0,
             },
             right: {
                 start: 0,
-                end: 0
-            }
-        }
+                end: 0,
+            },
+        },
     }
 
     resize(): void {
         const { width, height, orientation } = this.gameController.layoutManager
-        
-        const avatarNames = Object.keys(this.avatars)
 
+        const avatarNames = Object.keys(this.avatars)
 
         const backgroundRatio = this.background.width / this.background.height
         const screenRatio = width / height
@@ -233,7 +276,10 @@ export default class SceneDialog extends GameScene {
             this.background.scale.x = this.background.scale.y
             this.dialog.width = width * 0.98
             this.dialog.scale.y = this.dialog.scale.x
-            this.dialog.position.set(0 - this.dialog.width/2, height/2 - this.dialog.height * 0.15 - this.dialog.height/2)
+            this.dialog.position.set(
+                0 - this.dialog.width / 2,
+                height / 2 - this.dialog.height * 0.15 - this.dialog.height / 2,
+            )
 
             for (const avatarName in this.avatars) {
                 const avatar = this.avatars[avatarName].sprite
@@ -242,13 +288,19 @@ export default class SceneDialog extends GameScene {
             }
 
             if (avatarNames.length) {
-                this.avatarPositions.x.left.start = -width/2 - this.avatars[avatarNames[0]].sprite.width * 0.5
-                this.avatarPositions.x.left.end = - width/2 + this.avatars[avatarNames[0]].sprite.width * 0.45
-                this.avatarPositions.x.right.start = width/2 + this.avatars[avatarNames[0]].sprite.width * 0.5
-                this.avatarPositions.x.right.end = width/2 - this.avatars[avatarNames[0]].sprite.width * 0.45
-                this.avatarPositions.y = this.dialog.position.y - this.avatars[avatarNames[0]].sprite.height * 0.4
+                this.avatarPositions.x.left.start =
+                    -width / 2 - this.avatars[avatarNames[0]].sprite.width * 0.5
+                this.avatarPositions.x.left.end =
+                    -width / 2 +
+                    this.avatars[avatarNames[0]].sprite.width * 0.45
+                this.avatarPositions.x.right.start =
+                    width / 2 + this.avatars[avatarNames[0]].sprite.width * 0.5
+                this.avatarPositions.x.right.end =
+                    width / 2 - this.avatars[avatarNames[0]].sprite.width * 0.45
+                this.avatarPositions.y =
+                    this.dialog.position.y -
+                    this.avatars[avatarNames[0]].sprite.height * 0.4
             }
-            
         } else {
             //this asset looks awful in portrait but better than nothing
             this.background.height = height
@@ -256,7 +308,10 @@ export default class SceneDialog extends GameScene {
 
             this.dialog.width = width * 0.98
             this.dialog.scale.y = this.dialog.scale.x
-            this.dialog.position.set(0 - this.dialog.width/2, height/2 - this.dialog.height*0.4)
+            this.dialog.position.set(
+                0 - this.dialog.width / 2,
+                height / 2 - this.dialog.height * 0.4,
+            )
 
             for (const avatarName in this.avatars) {
                 const avatar = this.avatars[avatarName].sprite
@@ -265,18 +320,27 @@ export default class SceneDialog extends GameScene {
             }
 
             if (avatarNames.length) {
-                this.avatarPositions.x.left.start = -width/2 - this.avatars[avatarNames[0]].sprite.width * 0.5
-                this.avatarPositions.x.left.end = - width/2 + this.avatars[avatarNames[0]].sprite.width * 0.4
-                this.avatarPositions.x.right.start = width/2 + this.avatars[avatarNames[0]].sprite.width * 0.5
-                this.avatarPositions.x.right.end = width/2 - this.avatars[avatarNames[0]].sprite.width * 0.4
-                this.avatarPositions.y = this.dialog.position.y - this.avatars[avatarNames[0]].sprite.height * 0.4
+                this.avatarPositions.x.left.start =
+                    -width / 2 - this.avatars[avatarNames[0]].sprite.width * 0.5
+                this.avatarPositions.x.left.end =
+                    -width / 2 + this.avatars[avatarNames[0]].sprite.width * 0.4
+                this.avatarPositions.x.right.start =
+                    width / 2 + this.avatars[avatarNames[0]].sprite.width * 0.5
+                this.avatarPositions.x.right.end =
+                    width / 2 - this.avatars[avatarNames[0]].sprite.width * 0.4
+                this.avatarPositions.y =
+                    this.dialog.position.y -
+                    this.avatars[avatarNames[0]].sprite.height * 0.4
             }
         }
 
         if (this.currentDialogueData) {
             this.currentDialogueTween?.progress(1)
             const posLoc = this.currentAvatar!.position
-            this.currentAvatar!.sprite.position.set(this.avatarPositions.x[posLoc].end, this.avatarPositions.y)
+            this.currentAvatar!.sprite.position.set(
+                this.avatarPositions.x[posLoc].end,
+                this.avatarPositions.y,
+            )
         }
     }
 }

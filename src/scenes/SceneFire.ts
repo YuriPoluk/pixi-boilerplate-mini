@@ -14,14 +14,17 @@ export default class SceneFire extends GameScene {
     constructor(gameController: GameController) {
         super(gameController)
 
-        let obj = new Graphics();
-        obj.beginFill(0x898989);
-        obj.drawRect(0, 0, 200, 100);
-        this.background = this.addChild(obj);
+        let obj = new Graphics()
+        obj.beginFill(0x898989)
+        obj.drawRect(0, 0, 200, 100)
+        this.background = this.addChild(obj)
 
         this.particleContainer = this.addChild(new Container())
         const particleTexture = Texture.from('smoke_particle')
-        this.emitter = new Emitter(this.particleContainer, upgradeConfig(config, [particleTexture]))
+        this.emitter = new Emitter(
+            this.particleContainer,
+            upgradeConfig(config, [particleTexture]),
+        )
         this.emitter.emit = true
     }
 
@@ -31,10 +34,10 @@ export default class SceneFire extends GameScene {
         this.particleContainer.position.set(0, 0)
         this.background.width = width
         this.background.height = height
-        this.background.position.set(-width/2, -height/2)
+        this.background.position.set(-width / 2, -height / 2)
     }
 
     update(dt: number) {
-        this.emitter.update(dt * 0.001);
+        this.emitter.update(dt * 0.001)
     }
 }
